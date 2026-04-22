@@ -2,3 +2,5 @@ venv/
 __pycache__/
 *.pyc
 .env
+leaf_dataset/
+gro_model_v5_savedmodel/

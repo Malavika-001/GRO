@@ -1,0 +1,39 @@
+<section class="detect-section">
+
+<div class="scanner-container">
+
+<h2>Scan or Upload Leaf</h2>
+
+<input type="file" id="imageInput" accept="image/*">
+
+<button onclick="predict()">Analyze Image</button>
+
+<img id="preview" class="preview-image" style="display:none">
+
+<hr>
+
+<video id="camera" autoplay playsinline muted style="display:none"></video>
+
+<canvas id="canvas" style="display:none"></canvas>
+
+<button onclick="openCamera()">Open Camera</button>
+<button onclick="capturePhoto()">Capture</button>
+
+<div id="result" class="result hidden">
+
+<h3 id="predictionText"></h3>
+
+<div class="confidence-bar">
+<div id="confidenceFill"></div>
+</div>
+
+<p id="confidenceText"></p>
+
+<h4 id="treatmentText"></h4>
+<h4 id="preventionText"></h4>
+
+</div>
+
+</div>
+
+</section>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GRO - Smart Leaf Diagnosis</title>
+
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#2e7d32">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+<h2 class="logo">🌿 GRO</h2>
+
+<ul>
+<li><a href="#home">Home</a></li>
+<li><a href="#detect">Detect</a></li>
+<li><a href="#crops">Crops</a></li>
+<li><a href="#solutions">Solutions</a></li>
+<li><a href="#reviews">Reviews</a></li>
+</ul>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+
+<h1>AI Powered Plant Disease Detection</h1>
+
+<p>
+Upload a crop leaf image and get instant disease diagnosis with treatment advice.
+</p>
+
+<a href="#detect" class="btn-primary">Start Detection</a>
+
+</section>
+
+
+<!-- DETECTION -->
+
+<section id="detect" class="detect-section">
+
+<div class="scanner-container">
+
+<h2>Scan or Upload Leaf</h2>
+
+<!-- Scanner Box -->
+<div class="scanner-box">
+
+<img id="scanImage" class="scan-image" alt="Captured leaf image">
+
+<video id="camera" autoplay playsinline muted></video>
+
+<div class="scan-overlay">
+
+<div class="scan-frame"></div>
+
+<div id="scanLine" class="scan-line"></div>
+
+</div>
+
+</div>
+
+<!-- Hidden canvas -->
+<canvas id="canvas" style="display:none;"></canvas>
+
+
+<!-- Upload -->
+
+<div class="upload-box">
+
+<input type="file" id="imageInput" accept="image/*">
+
+<button onclick="startCrop()">Crop Image</button>
+<button onclick="applyCrop()">Apply Crop</button>
+<button onclick="predict()">Analyze Image</button>
+
+</div>
+
+
+<!-- Camera Buttons -->
+
+<div class="camera-buttons">
+
+<button onclick="openCamera()">Open Camera</button>
+
+<button onclick="capturePhoto()">Capture</button>
+
+</div>
+
+
+<!-- Reset -->
+
+<div style="margin-top:15px;">
+
+<button onclick="resetScan()">Scan Another Leaf</button>
+
+</div>
+
+
+<!-- Result -->
+
+<div id="result" class="result hidden">
+
+<h3 id="predictionText"></h3>
+
+<div class="confidence-bar">
+<div id="confidenceFill"></div>
+</div>
+
+<p id="confidenceText"></p>
+
+<h4 id="treatmentText"></h4>
+
+<h4 id="preventionText"></h4>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CROPS -->
+
+<section class="section light" id="crops">
+
+<h2>Supported Crops</h2>
+
+<div class="grid">
+
+<div class="card-small">🍎 Apple</div>
+<div class="card-small">🌽 Corn</div>
+<div class="card-small">🍇 Grape</div>
+<div class="card-small">🌶 Pepper</div>
+<div class="card-small">🥔 Potato</div>
+<div class="card-small">🍓 Strawberry</div>
+<div class="card-small">🍅 Tomato</div>
+
+</div>
+
+</section>
+
+
+<!-- SOLUTIONS -->
+
+<section class="section" id="solutions">
+
+<h2>How GRO Helps Farmers</h2>
+
+<div class="grid">
+
+<div class="card-small">
+<h3>Instant Detection</h3>
+<p>Upload a leaf image and get AI diagnosis instantly.</p>
+</div>
+
+<div class="card-small">
+<h3>Treatment Advice</h3>
+<p>Receive recommended treatment for plant diseases.</p>
+</div>
+
+<div class="card-small">
+<h3>Prevention Tips</h3>
+<p>Prevent diseases with smart farming practices.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REVIEWS -->
+
+<section class="section light" id="reviews">
+
+<h2>User Reviews</h2>
+
+<div class="grid">
+
+<div class="review-card">
+<p>Very useful tool for farmers!</p>
+<strong>– Farmer User</strong>
+</div>
+
+<div class="review-card">
+<p>Easy to use and accurate detection.</p>
+<strong>– Agriculture Student</strong>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<p>© 2026 GRO – AI Plant Disease Detection</p>
+
+</footer>
+
+
+<!-- JS -->
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gro-Leaf | AI Plant Diagnostics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2d6a4f;
+            --primary-light: #52b788;
+            --accent: #d8f3dc;
+            --text-dark: #1b4332;
+            --white: #ffffff;
+            --error: #e63946;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f1 0%, #d8f3dc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 900px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        /* --- Left Side: Upload Area --- */
+        .upload-section {
+            padding: 40px;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-box {
+            margin-top: 30px;
+            width: 100%;
+            border: 2px dashed rgba(255,255,255,0.4);
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-box:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--white);
+        }
+
+        #imagePreview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: none;
+            margin-top: 15px;
+        }
+
+        .btn-predict {
+            margin-top: 25px;
+            background: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-predict:hover { transform: translateY(-2px); background: #74c69d; }
+        .btn-predict:disabled { background: #95d5b2; cursor: not-allowed; }
+
+        /* --- Right Side: Results --- */
+        .results-section {
+            padding: 40px;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .placeholder-text {
+            color: #888;
+            text-align: center;
+            margin: auto;
+        }
+
+        .result-card { display: none; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .disease-name {
+            color: var(--text-dark);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .confidence-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 10px;
+            margin: 15px 0 25px 0;
+        }
+
+        .confidence-bar-fill {
+            height: 100%;
+            background: var(--primary-light);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        .info-group {
+            margin-bottom: 20px;
+        }
+
+        .info-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .info-text {
+            color: #444;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="upload-section">
+            <div class="logo">
+                <i class="fas fa-leaf"></i> Gro-Leaf
+            </div>
+            <p>Artificial Intelligence for Healthier Crops</p>
+
+            <form id="uploadForm">
+                <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                    <p id="uploadText" style="margin-top:10px;">Click to upload leaf image</p>
+                    <img id="imagePreview" alt="Preview">
+                    <input type="file" id="fileInput" name="file" hidden accept="image/*">
+                </div>
+                <button type="submit" class="btn-predict" id="predictBtn">Analyze Health</button>
+            </form>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div id="placeholder" class="placeholder-text">
+                <i class="fas fa-microscope fa-4x" style="margin-bottom:20px; opacity:0.3;"></i>
+                <p>Upload an image to start the automated diagnosis process.</p>
+            </div>
+
+            <div class="spinner" id="loadingSpinner"></div>
+
+            <div class="result-card" id="resultCard">
+                <span class="status-badge" id="statusBadge">Diagnosis Complete</span>
+                <h2 class="disease-name" id="res_prediction">Apple Scab</h2>
+                <p style="font-size: 0.9rem; color: #666;">Confidence Level: <span id="res_conf_text">0%</span></p>
+                
+                <div class="confidence-bar-container">
+                    <div class="confidence-bar-fill" id="res_conf_bar"></div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label"><i class="fas fa-medkit"></i> Recommended Treatment</div>
+                    <p class="info-text" id="res_treatment">---</p>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-label"><i class="fas fa-shield-alt"></i> Prevention Strategy</div>
+                    <p class="info-text" id="res_prevention">---</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadText = document.getElementById('uploadText');
+        const uploadForm = document.getElementById('uploadForm');
+        const predictBtn = document.getElementById('predictBtn');
+        
+        const placeholder = document.getElementById('placeholder');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const resultCard = document.getElementById('resultCard');
+
+        // Handle Image Preview
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                uploadText.style.display = 'none';
+                imagePreview.style.display = 'block';
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle Form Submission
+        uploadForm.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            if(!fileInput.files[0]) return alert("Please select an image first");
+            
+            formData.append('file', fileInput.files[0]);
+
+            // UI State Change
+            placeholder.style.display = 'none';
+            resultCard.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+            predictBtn.disabled = true;
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if(data.error) {
+                    alert(data.error);
+                } else {
+                    // Update UI with Results
+                    document.getElementById('res_prediction').innerText = data.prediction.replace(/___/g, " ");
+                    const confPercent = Math.round(data.confidence * 100);
+                    document.getElementById('res_conf_text').innerText = confPercent + "%";
+                    document.getElementById('res_conf_bar').style.width = confPercent + "%";
+                    document.getElementById('res_treatment').innerText = data.treatment;
+                    document.getElementById('res_prevention').innerText = data.prevention;
+
+                    loadingSpinner.style.display = 'none';
+                    resultCard.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred during analysis.");
+            } finally {
+                predictBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

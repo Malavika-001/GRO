@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GRO Scanner</title>
+
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css"/>
+
+</head>
+
+<body>
+
+<a href="/" class="back-btn">← Back</a>
+
+
+<!-- LOGO -->
+
+<div style="padding:20px">
+
+<a href="/" style="text-decoration:none;">
+<h2 class="logo">🌿 GRO</h2>
+</a>
+
+</div>
+
+
+<!-- TITLE -->
+
+<div style="text-align:center;margin-bottom:20px">
+
+<h2>Here is the Scanner!</h2>
+
+<p>Upload or capture a crop leaf and detect diseases instantly.</p>
+
+</div>
+
+
+<!-- DETECTION SECTION -->
+
+<section class="detect-section">
+
+<div class="scanner-container">
+
+
+<!-- Scanner Box -->
+
+<div class="scanner-box">
+
+<img id="scanImage" class="scan-image" style="display:none;">
+
+<video id="camera" autoplay playsinline muted style="display:none;"></video>
+
+<div class="scan-overlay">
+
+<div class="scan-frame"></div>
+
+<div id="scanLine" class="scan-line"></div>
+
+</div>
+
+</div>
+
+
+<!-- Hidden canvas -->
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+
+<!-- Camera Buttons -->
+
+<div class="camera-buttons">
+
+<button onclick="openCamera()">Open Camera</button>
+
+<button onclick="capturePhoto()">Capture</button>
+
+</div>
+
+
+<!-- Crop Buttons -->
+
+<div class="camera-buttons">
+
+<button onclick="startCrop()">Crop Image</button>
+
+<button onclick="applyCrop()">Apply Crop</button>
+
+</div>
+
+
+<!-- Upload -->
+
+<div class="upload-box">
+
+<input type="file" id="imageInput" accept="image/*">
+
+</div>
+
+
+<!-- Analyze -->
+
+<div style="margin-top:10px">
+
+<button onclick="predict()">Analyze Image</button>
+
+</div>
+
+
+<!-- Reset -->
+
+<div style="margin-top:10px">
+
+<button onclick="resetScan()">Scan Another Leaf</button>
+
+</div>
+
+
+<!-- Result -->
+
+<div id="result" class="result hidden">
+
+<h3 id="predictionText"></h3>
+
+<div class="confidence-bar">
+<div id="confidenceFill"></div>
+</div>
+
+<p id="confidenceText"></p>
+
+<h4 id="treatmentText"></h4>
+
+<h4 id="preventionText"></h4>
+
+</div>
+
+
+</div>
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
